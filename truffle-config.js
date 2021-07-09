@@ -5,7 +5,10 @@ module.exports = {
       port: 7545,
       network_id: "*"
     },
-  },
-  contracts_directory: './contracts/',
-  contracts_build_directory: './frontend/src/contracts/',
+    develop: {
+      port: 8545
+    },
+    contracts_directory: './contracts/',
+    contracts_build_directory: './frontend/src/contracts/',
+  }
 };

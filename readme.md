@@ -2,6 +2,8 @@
 Predefined project with Truffle & Drizzle
 Good starting point for another projects.
 
+project is based on truffle box called pet-shop
+
 ## Dependencies
 - Ganache https://www.trufflesuite.com/ganache
 
