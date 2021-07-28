@@ -1,5 +1,5 @@
 {
-  "name": "blockchain-electiob",
+  "name": "blockchain-election",
   "version": "0.1",
   "description": "",
   "author": {
@@ -8,7 +8,7 @@
   },
   "scripts": {
     "serve": "cd frontend && vue-cli-service serve",
-    "deploy": "truffle compile --reset && truffle migrate --reset"
+    "deploy": "truffle compile && truffle migrate --reset"
   },
   "dependencies": {
     "chai": "4.2.0",

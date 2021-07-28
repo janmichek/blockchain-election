@@ -1,4 +1,4 @@
-### Blockchain NFT mint
+### Blockchain Election
 
 This repository is inspired by tutorial:
 https://www.youtube.com/watch?v=3681ZYbDSSk
@@ -15,21 +15,19 @@ https://www.youtube.com/watch?v=3681ZYbDSSk
 
 ```yarn install```
 
+### Deploy contracts to blockchain
+
+```yarn deploy```
+
 ### Install frontend dependencies
 
 ```cd frontend```
 
 ```yarn install```
 
-### Deploy contracts to blockchain
-
-```yarn deploy```
-
 ## Run project
 
 Run Ganache with Quickstart Workspace
-
-```cd frontend```
 
 ```yarn serve```
 

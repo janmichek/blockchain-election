@@ -1,6 +1,5 @@
 <template>
   <div v-if="!loading" id="app">
-
     <header>
         Account: {{ account }}
     </header>
