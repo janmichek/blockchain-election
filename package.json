@@ -1,21 +1,14 @@
 {
-  "name": "pet-shop",
-  "version": "1.0.0",
+  "name": "blockchain-electiob",
+  "version": "0.1",
   "description": "",
-  "main": "truffle.js",
-  "directories": {
-    "test": "test"
+  "author": {
+    "name": "Jan Michek",
+    "email": "jan@janmichek.cz"
   },
   "scripts": {
-    "dev": "lite-server",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "serve": "cd frontend && vue-cli-service serve",
     "deploy": "truffle compile --reset && truffle migrate --reset"
-  },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "lite-server": "^2.3.0"
   },
   "dependencies": {
     "chai": "4.2.0",

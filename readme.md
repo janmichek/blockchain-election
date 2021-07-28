@@ -1,27 +1,52 @@
-### Drizzle template
-Predefined project with Truffle & Drizzle
-Good starting point for another projects.
+### Blockchain NFT mint
 
-project is based on truffle box called pet-shop
+This repository is inspired by tutorial:
+https://www.youtube.com/watch?v=3681ZYbDSSk
 
 ## Dependencies
-- Ganache https://www.trufflesuite.com/ganache
 
-Run Ganache quickstart Workspace
+- Ganache https://www.trufflesuite.com/ganache
+- Node JS
+- Yarn
 
 ## Init project
-### Install dependencies
+
+### Install backend dependencies
+
+```yarn install```
+
+### Install frontend dependencies
+
 ```cd frontend```
 
 ```yarn install```
 
-### Compile contracts
-```truffle compile --reset```
-
 ### Deploy contracts to blockchain
-```truffle migrate --reset```
+
+```yarn deploy```
 
 ## Run project
+
+Run Ganache with Quickstart Workspace
+
 ```cd frontend```
 
 ```yarn serve```
+
+### Init Metamask account
+
+Login to Metamask
+
+Go to Ganache and copy private key of first account
+
+Open Metamask
+
+Switch to Ganache Network
+
+Click Import account
+
+Paste private key
+
+Connect Account
+
+Open app on http://localhost:8080/

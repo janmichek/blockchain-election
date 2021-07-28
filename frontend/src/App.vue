@@ -1,15 +1,25 @@
 <template>
-  <div v-if="isDrizzleInitialized || !loading" id="app">
-    <div>Hello world</div>
-    {{ candidates }}
+  <div v-if="!loading" id="app">
+
+    <header>
+        Account: {{ account }}
+    </header>
     <div v-if="candidates">
       <div v-for="candidate in candidates" :key="candidate.id">
-        {{ candidate.id }} - {{ candidate.name }} - {{ candidate.voteCount }}
+        Candidate: {{ candidate.id }} - {{ candidate.name }} - {{ candidate.voteCount }} votes
       </div>
     </div>
-    <div>
-      your account {{ account }}
-    </div>
+
+    <h2>Voting</h2>
+    <select v-if="candidates" @input="updatePreselectedCandidate">
+      <option
+        v-for="(candidate, index) in candidates"
+        :value="index"
+        :key="index">
+        {{ candidate.name }}
+      </option>
+    </select>
+    <button @click="vote">Vote for {{ selectedCandidateId }}</button>
   </div>
   <div v-else>
     Loading
@@ -19,21 +29,20 @@
 <script>
   import Web3 from "web3"
   import Election from './contracts/Election.json'
-  import { mapGetters } from 'vuex'
 
   export default {
     name: 'app',
     data () {
       return {
         account: '',
-        election: '',
+        contract: '',
         ethBalance: '',
         candidateCount: '',
-        candidates: null,
+        candidates: [],
         loading: true,
+        selectedCandidateId: null,
       }
     },
-    computed: mapGetters('drizzle', ['isDrizzleInitialized']),
     async mounted () {
       await this.loadWeb3()
       await this.loadBlockchainData()
@@ -53,27 +62,27 @@
         const web3 = window.web3
         const accounts = await web3.eth.getAccounts()
         this.account = accounts[0]
-        this.ethBalance = await web3.eth.getBalance(this.account)
 
         const networkId = await web3.eth.net.getId()
-        const tokenData = Election.networks[networkId]
-        if (tokenData) {
-          this.election = new web3.eth.Contract(Election.abi, tokenData.address)
-          // call() from web3
-          this.candidateCount = await this.election.methods.candidatesCount().call()
-          // this.tokenBalance = await this.token.methods.balanceOf(this.account).call().toString()
+        const networkdata = Election.networks[networkId]
+        if (networkdata) {
+          this.contract = new web3.eth.Contract(Election.abi, networkdata.address)
+          this.candidateCount = await this.contract.methods.candidatesCount().call()
           for (let i = 1; i <= this.candidateCount; i++) {
-            console.log('i', i)
-            const can = await this.election.methods.candidates(i).call()
-            console.log('XXXXX can', can)
-            const candidate = { id: can[0], name: can[1], voteCount: can[2] }
-            console.log('XXXXX candidate', candidate)
-            this.candidates[i - 1] = candidate
+            const can = await this.contract.methods.candidates(i).call()
+            this.candidates[i - 1] = { id: can[0], name: can[1], voteCount: can[2] }
           }
           this.loading = false
         } else {
           window.alert('Token contract not depployed to detected network')
         }
+      },
+      updatePreselectedCandidate (e) {
+        this.selectedCandidateId = parseInt(e.target.value) + 1
+      },
+      vote () {
+        this.contract.methods.vote(this.selectedCandidateId).send({ from: this.account })
+          .on('transactionHash', () => (this.loading = false))
       },
     },
   }
