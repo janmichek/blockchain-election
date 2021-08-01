@@ -1,24 +1,40 @@
 <template>
   <div v-if="!loading" id="app">
     <header>
-        Account: {{ account }}
+      <h1>
+        Election
+      </h1>
+      Account: {{ account }}
     </header>
-    <div v-if="candidates">
-      <div v-for="candidate in candidates" :key="candidate.id">
-        Candidate: {{ candidate.id }} - {{ candidate.name }} - {{ candidate.voteCount }} votes
-      </div>
-    </div>
-
-    <h2>Voting</h2>
-    <select v-if="candidates" @input="updatePreselectedCandidate">
-      <option
-        v-for="(candidate, index) in candidates"
-        :value="index"
-        :key="index">
-        {{ candidate.name }}
-      </option>
-    </select>
-    <button @click="vote">Vote for {{ selectedCandidateId }}</button>
+    <section>
+      <table>
+        <tr>
+          <th>Candidate Name</th>
+          <th>Votes</th>
+        </tr>
+        <tr v-for="candidate in candidates" :key="candidate.id">
+          <td>{{ candidate.name }}</td>
+          <td>{{ candidate.voteCount }}</td>
+        </tr>
+      </table>
+    </section>
+    <section>
+      <h2>Voting</h2>
+      <select
+        @input="updatePreselectedCandidate">
+        <option disabled selected> --- select candidate ---</option>
+        <option
+          v-for="candidate in candidates"
+          :value="candidate.id"
+          :key="candidate.id">
+          {{ candidate.name }}
+        </option>
+      </select>
+      <button @click="vote">Vote</button>
+    </section>
+    <section>
+      <i> hint: You can only vote once from an account, but you may try to switch account and send another vote</i>
+    </section>
   </div>
   <div v-else>
     Loading
@@ -73,15 +89,20 @@
           }
           this.loading = false
         } else {
-          window.alert('Token contract not depployed to detected network')
+          window.alert('Token contract not deployed to detected network')
         }
       },
       updatePreselectedCandidate (e) {
-        this.selectedCandidateId = parseInt(e.target.value) + 1
+        this.selectedCandidateId = e.target.value
       },
       vote () {
-        this.contract.methods.vote(this.selectedCandidateId).send({ from: this.account })
-          .on('transactionHash', () => (this.loading = false))
+        this.contract.methods
+          .vote(this.selectedCandidateId)
+          .send({ from: this.account })
+          .on('transactionHash', () => {
+            this.loading = false
+            window.location.reload(true)
+          })
       },
     },
   }
