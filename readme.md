@@ -1,6 +1,8 @@
-### Blockchain Election
+### Blockchain Election DAPP
 
-This repository is inspired by tutorial:
+App simulates voting for two candidates. Each account can only vote once. There is an event after voting implemented which affects UI.
+
+This repository is inspired by following tutorial:
 https://www.youtube.com/watch?v=3681ZYbDSSk
 
 ## Dependencies
@@ -17,6 +19,8 @@ https://www.youtube.com/watch?v=3681ZYbDSSk
 
 ### Deploy contracts to blockchain
 
+Run Ganache with Quickstart Workspace
+
 ```yarn deploy```
 
 ### Install frontend dependencies
@@ -26,8 +30,6 @@ https://www.youtube.com/watch?v=3681ZYbDSSk
 ```yarn install```
 
 ## Run project
-
-Run Ganache with Quickstart Workspace
 
 ```yarn serve```
 
