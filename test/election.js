@@ -32,6 +32,10 @@ contract('Election', (accounts) => {
       const candidateId = 1
       const reciept = await election.vote(candidateId, { from: accounts[0] })
       const voted = await election.voters(accounts[0])
+      assert.equal(reciept.logs.length,1, "an event was triggered")
+      assert.equal(reciept.logs[0].event, "voted", "the event type is correct")
+      assert.equal(reciept.logs[0].args._candidateId.toNumber(), candidateId, "the candidate Id is correct")
+      return election.voters(accounts[0])
 
       assert.equal(voted, true, "the voter was marked as voted")
       const candidate = await election.candidates(candidateId)

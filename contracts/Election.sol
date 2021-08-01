@@ -19,6 +19,10 @@ contract Election {
     // how many candidates in mapping
     uint public candidatesCount;
 
+    event voted(
+        uint indexed _candidateId
+    );
+
 
     constructor () public {
         addCandidate("Sandwich");
@@ -35,5 +39,7 @@ contract Election {
         require(_candidateId > 0 && _candidateId <= candidatesCount);
         voters[msg.sender] = true;
         candidates[_candidateId].voteCount ++;
+
+        emit voted(_candidateId);
     }
 }

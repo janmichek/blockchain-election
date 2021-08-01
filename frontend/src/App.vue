@@ -18,7 +18,7 @@
         </tr>
       </table>
     </section>
-    <section>
+    <section v-if="!hasAccountVoted">
       <h2>Voting</h2>
       <select
         @input="updatePreselectedCandidate">
@@ -56,32 +56,34 @@
         candidates: [],
         loading: true,
         selectedCandidateId: null,
+        web3: null,
+        hasAccountVoted: false
       }
     },
     async mounted () {
       await this.loadWeb3()
       await this.loadBlockchainData()
+      await this.listenForEvents()
     },
     methods: {
       async loadWeb3 () {
         if (window.ethereum) {
-          window.web3 = new Web3(window.ethereum)
+          this.web3 = new Web3(window.ethereum)
           await window.ethereum.enable()
-        } else if (window.web3) {
-          window.web3 = new Web3(window.web3.currentProvider)
+        } else if (this.web3) {
+          this.web3 = new Web3(window.web3.currentProvider)
         } else {
           window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
         }
       },
       async loadBlockchainData () {
-        const web3 = window.web3
-        const accounts = await web3.eth.getAccounts()
+        const accounts = await this.web3.eth.getAccounts()
         this.account = accounts[0]
 
-        const networkId = await web3.eth.net.getId()
+        const networkId = await this.web3.eth.net.getId()
         const networkdata = Election.networks[networkId]
         if (networkdata) {
-          this.contract = new web3.eth.Contract(Election.abi, networkdata.address)
+          this.contract = new this.web3.eth.Contract(Election.abi, networkdata.address)
           this.candidateCount = await this.contract.methods.candidatesCount().call()
           for (let i = 1; i <= this.candidateCount; i++) {
             const can = await this.contract.methods.candidates(i).call()
@@ -92,16 +94,27 @@
           window.alert('Token contract not deployed to detected network')
         }
       },
+      async listenForEvents(){
+        const self = this
+        this.contract.once('voted', {
+          filter: { event: 'voted' }, // Using an array means OR: e.g. 20 or 23
+          fromBlock: 0
+        }, async function () {
+          await self.loadBlockchainData()
+          self.hasAccountVoted = true
+          self.loading = false
+        });
+      },
       updatePreselectedCandidate (e) {
         this.selectedCandidateId = e.target.value
       },
       vote () {
+        this.loading = true
         this.contract.methods
           .vote(this.selectedCandidateId)
           .send({ from: this.account })
           .on('transactionHash', () => {
             this.loading = false
-            window.location.reload(true)
           })
       },
     },
