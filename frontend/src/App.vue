@@ -1,8 +1,10 @@
 <template>
-  <div v-if="!loading" id="app">
+  <div
+    v-if="!loading"
+    id="app">
     <header>
       <h1>
-        Election
+        Election DAPP
       </h1>
       Account: {{ account }}
     </header>
@@ -57,7 +59,7 @@
         loading: true,
         selectedCandidateId: null,
         web3: null,
-        hasAccountVoted: false
+        hasAccountVoted: false,
       }
     },
     async mounted () {
@@ -94,16 +96,16 @@
           window.alert('Token contract not deployed to detected network')
         }
       },
-      async listenForEvents(){
+      async listenForEvents () {
         const self = this
         this.contract.once('voted', {
           filter: { event: 'voted' }, // Using an array means OR: e.g. 20 or 23
-          fromBlock: 0
+          fromBlock: 0,
         }, async function () {
           await self.loadBlockchainData()
           self.hasAccountVoted = true
           self.loading = false
-        });
+        })
       },
       updatePreselectedCandidate (e) {
         this.selectedCandidateId = e.target.value
