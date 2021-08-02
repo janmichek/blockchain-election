@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="!loading"
+    v-if="!isLoading"
     id="app">
     <header>
       <h1>
@@ -56,7 +56,7 @@
         ethBalance: '',
         candidateCount: '',
         candidates: [],
-        loading: true,
+        isLoading: true,
         selectedCandidateId: null,
         web3: null,
         hasAccountVoted: false,
@@ -91,7 +91,7 @@
             const can = await this.contract.methods.candidates(i).call()
             this.candidates[i - 1] = { id: can[0], name: can[1], voteCount: can[2] }
           }
-          this.loading = false
+          this.isLoading = false
         } else {
           window.alert('Token contract not deployed to detected network')
         }
@@ -104,19 +104,19 @@
         }, async function () {
           await self.loadBlockchainData()
           self.hasAccountVoted = true
-          self.loading = false
+          self.isLoading = false
         })
       },
       updatePreselectedCandidate (e) {
         this.selectedCandidateId = e.target.value
       },
       vote () {
-        this.loading = true
+        this.isLoading = true
         this.contract.methods
           .vote(this.selectedCandidateId)
           .send({ from: this.account })
           .on('transactionHash', () => {
-            this.loading = false
+            this.isLoading = false
           })
       },
     },
